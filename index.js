@@ -6,6 +6,7 @@ const {
 } = require("./utils");
 const { checkSolanaBuy, checkEthBuy, fetchPrices } = require("./utils/web3");
 const { formatNumberWithSpaces, weiToUsd } = require("./utils/helper");
+require("dotenv").config();
 
 const TelegramBot = require("node-telegram-bot-api");
 
