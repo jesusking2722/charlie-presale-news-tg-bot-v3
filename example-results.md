@@ -1,0 +1,53 @@
+# eth
+
+{
+blockNumber: '21908864',
+blockHash: '0x4d9d3b9629149c6602276312f0dbf2e751f96b7c8d54378049448fef8beb185d',
+timeStamp: '1740311759',
+hash: '0xf29bb9e9c45e56479fb7e11f3827c216d4c3217cededa2913747491b15ae9dad',
+nonce: '2',
+transactionIndex: '30',
+from: '0x228fbf2df792a29210507d94a70af3912905cca4',
+to: '0x07d2af0dd0d5678c74f2c0d7adf34166dd37ae22',
+value: '500000000000000',
+gas: '202444',
+gasPrice: '1322222670',
+input: '0x1f57aedb',
+methodId: '0x1f57aedb',
+functionName: 'buyFromNative()',
+contractAddress: '',
+cumulativeGasUsed: '5516788',
+txreceipt_status: '1',
+gasUsed: '199692',
+confirmations: '393828',
+isError: '0'
+},
+
+# base
+
+{
+blockNumber: '25659135',
+blockHash: '0x8b990ac53dae9c886b4c1600c88fe135a402473857a25f6f8a902f75691c4cd8',
+timeStamp: '1738107617',
+hash: '0x119a9fe0d81433b61316c84be9e96ad1f7c37e8d904366dbbda99b98cbb87d09',
+nonce: '2',
+transactionIndex: '62',
+from: '0x56caa668bca158790f26f4a47ed0069dab982614',
+to: '0x9c29d024c6cdfae7ea5df76068a3b63b904dc3b9',
+value: '0',
+gas: '27352',
+L1Gas: '1600',
+L1GasPrice: '3315503242',
+L1FeeScalar: '0.000000000000',
+L1FeesPaid: '295620824639',
+gasPrice: '18993667',
+input: '0xf2fde38b0000000000000000000000008673a3038ee704435eff81b330f0e78034e54bf2',
+methodId: '0xf2fde38b',
+functionName: 'transferOwnership(address newOwner)',
+contractAddress: '',
+cumulativeGasUsed: '9531973',
+txreceipt_status: '1',
+gasUsed: '27008',
+confirmations: '3478111',
+isError: '0'
+},
