@@ -49,11 +49,11 @@ const getAllEthTransactions = async () => {
       return [];
     } else {
       console.error("Error:", response.data.message);
-      return null;
+      return [];
     }
   } catch (error) {
-    console.error("API request failed:", error.message);
-    return null;
+    console.error("ETH API request failed:", error.message);
+    return [];
   }
 };
 
@@ -85,11 +85,11 @@ const getAllBSCTransactions = async () => {
       return [];
     } else {
       console.error("Error:", response.data.message);
-      return null;
+      return [];
     }
   } catch (error) {
-    console.error("API request failed:", error.message);
-    return null;
+    console.error("BSC API request failed:", error.message);
+    return [];
   }
 };
 
@@ -117,17 +117,16 @@ const getAllBaseTransactions = async () => {
           tx.to.toLowerCase() === BASE_ADDRESS.toLowerCase() &&
           tx.txreceipt_status === "1"
       );
-      console.log(transactions);
       return transactions;
     } else if (response.data.message === "No transactions found") {
       return [];
     } else {
       console.error("Error:", response.data.message);
-      return null;
+      return [];
     }
   } catch (error) {
-    console.error("API request failed:", error.message);
-    return null;
+    console.error("BASE API request failed:", error.message);
+    return [];
   }
 };
 
@@ -160,11 +159,11 @@ const getAllPolTransactions = async () => {
       return [];
     } else {
       console.error("Error:", response.data.message);
-      return null;
+      return [];
     }
   } catch (error) {
-    console.error("API request failed:", error.message);
-    return null;
+    console.error("POL API request failed:", error.message);
+    return [];
   }
 };
 

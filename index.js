@@ -11,6 +11,8 @@ const TelegramBot = require("node-telegram-bot-api");
 
 const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
 
+let flag = true;
+
 let totalEthTxCount = 0;
 let totalBscTxCount = 0;
 let totalBaseTxCount = 0;
@@ -97,13 +99,9 @@ const scan = async () => {
     const pol = await getAllPolTransactions();
 
     // initialize all trasaction counts
-    if (
-      totalEthTxCount === 0 &&
-      totalBscTxCount === 0 &&
-      totalBaseTxCount === 0 &&
-      totalPolTxCount === 0
-    ) {
+    if (flag) {
       setTotalCounts(eth, bsc, base, pol);
+      flag = false;
       return;
     }
 
