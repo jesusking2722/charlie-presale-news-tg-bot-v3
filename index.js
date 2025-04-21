@@ -55,7 +55,7 @@ const sendMessage = async (
         : ""
     }* 🔥\n*$CHRLE:* ${parseFloat(value / currentChrlePrice).toFixed(
       2
-    )}\n$*Dollars:* $${parseFloat(value / currentChrlePrice).toFixed(2)}\n`;
+    )}\n$*Dollars:* $${parseFloat(value).toFixed(2)}\n`;
 
     const completedMessage = `🚀 *BUY $CHRLE* 🚀\n*🌐 On Multichain:*  BNB, ETH, POLYGON, BASE, SOL, TON 🌐\n${boughtMessage}━━━━━━━━━━━━━━━━━━━━━\n💲 *Total Tokens Sold:*  ${totalSoldTokens}\n💰 *Amount Sold:*  $${totalSoldTokenUSD}\n🏷 *Current Price Per Token:*  $${currentChrlePrice}\n🏷 *Next Price Per Token:*  $${nextChrlePrice}\n📈 *Total To Raise:*  $19 830 000\n👥 *Total Holders:*  ${Number(
       totalUsers + totalSolanaUsers
@@ -72,6 +72,7 @@ const sendMessage = async (
     }/tx/${
       transactions[i].hash
     })\n🎯 *Live explore on blockchain how it is not changed there nothing*`;
+
     await bot.sendVideo(CHANNEL_ID, FILE_ID, {
       caption: completedMessage,
       parse_mode: "Markdown",
@@ -210,7 +211,7 @@ const scan = async () => {
       }
       if (totalBscTxCount < bsc.length) {
         await sendMessage(
-          totalEthTxCount,
+          totalBscTxCount,
           bsc,
           bnbPrice,
           currentPrice,
@@ -225,7 +226,7 @@ const scan = async () => {
       }
       if (totalBaseTxCount < base.length) {
         await sendMessage(
-          totalEthTxCount,
+          totalBaseTxCount,
           base,
           basePrice,
           currentPrice,
@@ -240,7 +241,7 @@ const scan = async () => {
       }
       if (totalPolTxCount < pol.length) {
         await sendMessage(
-          totalEthTxCount,
+          totalPolTxCount,
           pol,
           polPrice,
           currentPrice,
