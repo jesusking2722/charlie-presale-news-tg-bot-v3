@@ -59,7 +59,7 @@ const sendMessage = async (
 
     const completedMessage = `🚀 *BUY $CHRLE* 🚀\n*🌐 On Multichain:*  BNB, ETH, POLYGON, BASE, SOL, TON 🌐\n${boughtMessage}━━━━━━━━━━━━━━━━━━━━━\n💲 *Total Tokens Sold:*  ${totalSoldTokens}\n💰 *Amount Sold:*  $${totalSoldTokenUSD}\n🏷 *Current Price Per Token:*  $${currentChrlePrice}\n🏷 *Next Price Per Token:*  $${nextChrlePrice}\n📈 *Total To Raise:*  $19 830 000\n👥 *Total Holders:*  ${Number(
       totalUsers + totalSolanaUsers
-    )}\n━━━━━━━━━━━━━━━━━━━━━\n🔗 *Explore on Blockchain:\n*🌐 [🔍*View on Etherscan*](${
+    )}\n━━━━━━━━━━━━━━━━━━━━━\n🔗 *Explore on Blockchain:\n*🔍*View on explorer*\n🌐(${
       type === "ETH"
         ? "https://etherscan.io"
         : type === "BSC"
