@@ -63,11 +63,11 @@ const sendMessage = async (
       type === "ETH"
         ? "https://etherscan.io"
         : type === "BSC"
-        ? ""
+        ? "https://bscscan.com"
         : type === "BASE"
-        ? ""
+        ? "https://basescan.org"
         : type === "POL"
-        ? ""
+        ? "https://polygonscan.com"
         : ""
     }/tx/${
       transactions[i].hash
