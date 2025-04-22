@@ -69,9 +69,7 @@ const sendMessage = async (
         : type === "POL"
         ? "https://polygonscan.com"
         : ""
-    }/tx/${
-      transactions[i].hash
-    })\n🎯 *Live explore on blockchain how it is not changed there nothing*`;
+    }/tx/${transactions[i].hash})\n🎯 *Live explore on blockchain* 🎯`;
 
     await bot.sendVideo(CHANNEL_ID, FILE_ID, {
       caption: completedMessage,
