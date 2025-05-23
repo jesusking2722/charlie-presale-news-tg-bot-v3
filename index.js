@@ -1,15 +1,17 @@
 const {
-  formatNumberWithSpaces,
-  checkEthBuy,
-  checkSolanaBuy,
-} = require("./helper");
+  getAllEthTransactions,
+  getAllBSCTransactions,
+  getAllBaseTransactions,
+  getAllPolTransactions,
+} = require("./utils");
+const { checkSolanaBuy, checkEthBuy, fetchPrices } = require("./utils/web3");
+const { formatNumberWithSpaces, weiToUsd } = require("./utils/helper");
 require("dotenv").config();
+
 const TelegramBot = require("node-telegram-bot-api");
 
-// Initialize the bot with polling
 const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
 
-<<<<<<< HEAD
 let flag = true;
 
 let totalEthTxCount = 0;
@@ -94,187 +96,171 @@ const sendMessage = async (
 };
 
 const scan = async () => {
-=======
-const checkPresaleUpdates = async () => {
->>>>>>> 700780f41b7e88f8c7058f5fe6ba1687fb0d6045
   try {
-    // Fetch for Solana transactions
+    // start networks scanning
+    const eth = await getAllEthTransactions();
+    const bsc = await getAllBSCTransactions();
+    const base = await getAllBaseTransactions();
+    const pol = await getAllPolTransactions();
+
+    // initialize all trasaction counts
+    if (flag) {
+      setTotalCounts(eth, bsc, base, pol);
+      flag = false;
+      return;
+    }
+
+    console.log("total eth tx count: ", totalEthTxCount);
+    console.log("current eth tx count: ", eth.length);
+    console.log("total bsc tx count: ", totalBscTxCount);
+    console.log("current bsc tx count: ", bsc.length);
+    console.log("total base tx count: ", totalBaseTxCount);
+    console.log("current base tx count: ", base.length);
+    console.log("total polygon tx count: ", totalPolTxCount);
+    console.log("current polygon tx count: ", pol.length);
+
+    // start solana scanning
     const {
       totalSolanaToken,
       totalSolanaTokenUSD,
       changeSolana,
       solanaBoughtTokens,
       solanaBoughtUsd,
+      txId,
+      totalSolanaUsers,
     } = await checkSolanaBuy();
 
-    // Fetch Eth presale data
-    const {
-      userBought,
-      changesEth,
-      totalAmount,
-      totalUsers,
-      totalSoldPrice,
-      currentPrice,
-      nextPrice,
-    } = await checkEthBuy();
+    // validate if someone bought
+    if (
+      totalEthTxCount < eth.length ||
+      totalBscTxCount < bsc.length ||
+      totalBaseTxCount < base.length ||
+      totalPolTxCount < pol.length ||
+      changeSolana
+    ) {
+      // fetch total amount, total sold and current price and next price using all evm networks smart contracts via ankr rpc endpoints
+      const {
+        totalAmount,
+        totalSoldPrice,
+        currentPrice,
+        nextPrice,
+        totalUsers,
+      } = await checkEthBuy();
 
-    let priceUSD = "0";
+      // fetch all native coins prices (eth, bnb, base, pol)
+      const { ethPrice, bnbPrice, basePrice, polPrice } = await fetchPrices();
 
-    if (userBought) {
-      priceUSD = (userBought * parseFloat(currentPrice)).toFixed(2).toString();
-    }
-
-    if (changeSolana || (changesEth && Number(priceUSD) > 2)) {
-      // If a new purchase is detected (changesEth becomes true)
-      let message = "";
-      let solanaMessage = "";
-      let ethMessage = "";
-
-      console.log(
-        "solana bought token: ",
-        parseFloat(solanaBoughtTokens).toFixed(2),
-        "solana bought usd: ",
-        solanaBoughtUsd
-      );
-
-      if (changeSolana) {
-        solanaMessage = `🔥 *NEW BUY* 🔥\n*$CHRLE:* ${parseFloat(
-          solanaBoughtTokens
-        ).toFixed(2)}\n$*Dollars:* $${solanaBoughtUsd}\n`;
-      } else {
-        solanaMessage = "";
-      }
-
-      if (changesEth) {
-        console.log(
-          "eth bought token: ",
-          parseFloat(userBought).toFixed(2),
-          "eth bought usd: ",
-          priceUSD
-        );
-
-        console.log(
-          "total eth amount: ",
-          totalAmount,
-          "total eth usd: ",
-          totalSoldPrice
-        );
-
-        ethMessage = `🔥 *NEW BUY* 🔥\n*$CHRLE:* ${parseFloat(
-          userBought
-        ).toFixed(2)}\n$*Dollars:* $${priceUSD}\n`;
-      } else {
-        ethMessage = "";
-      }
-
+      // calculate total sold tokens in evm and svm
       const totalSoldTokens = formatNumberWithSpaces(
         parseFloat(parseFloat(totalSolanaToken) + parseFloat(totalAmount))
           .toFixed(2)
           .toString()
       );
 
+      console.log("total sold tokens: ", totalSoldTokens);
+
+      // calculate total sold tokens for usd in evm and svm
       const totalSoldTokenUSD = formatNumberWithSpaces(
         parseFloat(parseFloat(totalSolanaTokenUSD) + parseFloat(totalSoldPrice))
           .toFixed(2)
           .toString()
       );
 
-      message = `🚀 *BUY $CHRLE* 🚀\n*🌐 On Multichain:*  BNB, ETH, POLYGON, BASE, SOL, TON 🌐\n${ethMessage}${solanaMessage}━━━━━━━━━━━━━━━━━━━━━\n💲 *Total Tokens Sold:*  ${totalSoldTokens}\n💰 *Amount Sold:*  $${totalSoldTokenUSD}\n🏷 *Current Price Per Token:*  $${currentPrice}\n🏷 *Next Price Per Token:*  $${nextPrice}\n📈 *Total To Raise:*  $19 830 000\n👥 *Total Holders:*  ${totalUsers}\n━━━━━━━━━━━━━━━━━━━━━\n🔗 *Explore on Blockchain:\n*🌐 [🔍*View on Bscscan*](https://bscscan.com/address/0x1ddf0e740219960f9180ef73cbc7a5383adfc701)\n🌐 [🔍*View on Etherscan*](https://etherscan.io/address/0x07d2af0dd0d5678c74f2c0d7adf34166dd37ae22)\n🌐 [🔍*View on Basescan*](https://basescan.org/address/0x9c29d024c6cdfae7ea5df76068a3b63b904dc3b9)\n🌐 [🔍*View on Polygonscan*](https://polygonscan.com/address/0xb821b7fb4a82443ff6d8480408f9558db409fe2f)\n🎯 *Live explore on blockchain how it is not changed there nothing*`;
-      // 7049993896
-      //8000008748
-      // process.env.CHANNEL_ID;
-      await bot.sendVideo(process.env.CHANNEL_ID, process.env.FILE_ID, {
-        caption: message,
-        parse_mode: "Markdown",
-        disable_web_page_preview: true,
-        reply_markup: {
-          inline_keyboard: [
-            [
-              {
-                text: "Buy $CHRLE",
-                url: "https://charlieunicornai-sale.eu/",
-              },
+      console.log("total sold tokens usd: ", totalSoldTokenUSD);
+
+      // if someone bought with solana
+      if (changeSolana) {
+        const boughtMessage = `🔥 *NEW BUY* 🔥\n*$CHRLE:* ${parseFloat(
+          solanaBoughtTokens
+        ).toFixed(2)}\n$*Dollars:* $${solanaBoughtUsd}\n`;
+
+        // To do: fetch tx hash link
+        const completedMessage = `🚀 *BUY $CHRLE* 🚀\n*🌐 On Multichain:*  BNB, ETH, POLYGON, BASE, SOL, TON 🌐\n${boughtMessage}━━━━━━━━━━━━━━━━━━━━━\n💲 *Total Tokens Sold:*  ${totalSoldTokens}\n💰 *Amount Sold:*  $${totalSoldTokenUSD}\n🏷 *Current Price Per Token:*  $${currentPrice}\n🏷 *Next Price Per Token:*  $${nextPrice}\n📈 *Total To Raise:*  $19 830 000\n👥 *Total Holders:*  ${Number(
+          totalUsers + totalSolanaUsers
+        )}\n━━━━━━━━━━━━━━━━━━━━━\n🔗 *Explore on Blockchain:\n*🌐 [🔍*View on Solscan*](https://solscan.io/tx/${txId})\n🎯 *Live explore on blockchain how it is not changed there nothing*`;
+        await bot.sendVideo(CHANNEL_ID, FILE_ID, {
+          caption: completedMessage,
+          parse_mode: "Markdown",
+          disable_web_page_preview: true,
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: "Buy $CHRLE",
+                  url: "https://charlieunicornai-sale.eu",
+                },
+              ],
             ],
-          ],
-        },
-      });
-      console.log("✅ Purchase detected: Notification sent.");
+          },
+        });
+        console.log("✅ Purchase detected: Notification sent.");
+      }
+
+      // if someone bought with ETH
+      if (totalEthTxCount < eth.length) {
+        await sendMessage(
+          totalEthTxCount,
+          eth,
+          ethPrice,
+          currentPrice,
+          nextPrice,
+          totalSoldTokens,
+          totalSoldTokenUSD,
+          totalUsers,
+          totalSolanaUsers,
+          "ETH"
+        );
+        totalEthTxCount = eth.length;
+      }
+      if (totalBscTxCount < bsc.length) {
+        await sendMessage(
+          totalBscTxCount,
+          bsc,
+          bnbPrice,
+          currentPrice,
+          nextPrice,
+          totalSoldTokens,
+          totalSoldTokenUSD,
+          totalUsers,
+          totalSolanaUsers,
+          "BSC"
+        );
+        totalBscTxCount = bsc.length;
+      }
+      if (totalBaseTxCount < base.length) {
+        await sendMessage(
+          totalBaseTxCount,
+          base,
+          basePrice,
+          currentPrice,
+          nextPrice,
+          totalSoldTokens,
+          totalSoldTokenUSD,
+          totalUsers,
+          totalSolanaUsers,
+          "BASE"
+        );
+        totalBaseTxCount = base.length;
+      }
+      if (totalPolTxCount < pol.length) {
+        await sendMessage(
+          totalPolTxCount,
+          pol,
+          polPrice,
+          currentPrice,
+          nextPrice,
+          totalSoldTokens,
+          totalSoldTokenUSD,
+          totalUsers,
+          totalSolanaUsers,
+          "POL"
+        );
+        totalPolTxCount = pol.length;
+      }
     }
-    console.log(changeSolana, changesEth);
   } catch (error) {
-    console.error("Error checking presale updates:", error);
+    console.error("scan error: ", error);
   }
 };
 
-setInterval(checkPresaleUpdates, 20000);
-
-// bot.onText(/\/start/, async (msg) => {
-//   const chatId = msg.chat.id;
-//   console.log(chatId);
-
-//   const { totalSolanaToken, totalSolanaTokenUSD, changeSolana } =
-//     await checkSolanaBuy();
-
-//   // Fetch Eth presale data
-//   const {
-//     userBought,
-//     changesEth,
-//     totalAmount,
-//     totalUsers,
-//     totalSoldPrice,
-//     currentPrice,
-//     nextPrice,
-//   } = await checkEthBuy();
-//   console.log(
-//     "total solana Token: ",
-//     totalSolanaToken,
-//     "total solana token usd: ",
-//     totalSolanaTokenUSD
-//   );
-//   console.log(
-//     "total eth amount: ",
-//     totalAmount,
-//     "total eth usd: ",
-//     totalSoldPrice
-//   );
-
-//   const totalSoldTokens = formatNumberWithSpaces(
-//     parseFloat(parseFloat(totalSolanaToken) + parseFloat(totalAmount))
-//       .toFixed(2)
-//       .toString()
-//   );
-
-//   const totalSoldTokenUSD = formatNumberWithSpaces(
-//     parseFloat(parseFloat(totalSolanaTokenUSD) + parseFloat(totalSoldPrice))
-//       .toFixed(2)
-//       .toString()
-//   );
-
-//   console.log(
-//     "total tokens: ",
-//     totalSoldTokens,
-//     "total usd: ",
-//     totalSoldTokenUSD
-//   );
-
-//   const message = "welcome";
-
-//   // Send a message to the user when they type /start
-//   bot.sendVideo(chatId, process.env.FILE_ID, {
-//     caption: message,
-//     parse_mode: "Markdown",
-//     disable_web_page_preview: true,
-//     reply_markup: {
-//       inline_keyboard: [
-//         [
-//           {
-//             text: "Buy $CHRLE",
-//             url: "https://charlieunicornai-sale.eu/",
-//           },
-//         ],
-//       ],
-//     },
-//   });
-//   console.log(chatId);
-//   // console.log("✅ Purchase detected: Notification sent.");
-// });
+setInterval(scan, 30000);
