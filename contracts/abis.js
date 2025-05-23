@@ -1,26 +1,3 @@
-require("dotenv").config();
-
-const ANKR_API = process.env.ANKR_API;
-
-const NETWORKS = [
-  {
-    rpcUrl: `https://rpc.ankr.com/base/${ANKR_API}`,
-    contractAddress: "0x9C29D024c6CdFae7eA5df76068A3B63b904dC3b9",
-  },
-  {
-    rpcUrl: `https://rpc.ankr.com/eth/${ANKR_API}`,
-    contractAddress: "0x07D2AF0Dd0D5678C74f2C0d7adF34166dD37ae22",
-  },
-  {
-    rpcUrl: `https://rpc.ankr.com/polygon/${ANKR_API}`,
-    contractAddress: "0xb821B7fb4a82443Ff6D8480408F9558Db409FE2F",
-  },
-  {
-    rpcUrl: `https://rpc.ankr.com/bsc/${ANKR_API}`,
-    contractAddress: "0x1Ddf0E740219960f9180eF73cBC7A5383ADFC701",
-  },
-];
-
 const PRESALE_ABI = [
   {
     inputs: [
@@ -607,41 +584,6 @@ const PRESALE_ABI = [
   },
 ];
 
-const aggregatorV3ABI = [
-  {
-    inputs: [],
-    name: "latestRoundData",
-    outputs: [
-      { internalType: "uint80", name: "roundId", type: "uint80" },
-      { internalType: "int256", name: "answer", type: "int256" },
-      { internalType: "uint256", name: "startedAt", type: "uint256" },
-      { internalType: "uint256", name: "updatedAt", type: "uint256" },
-      { internalType: "uint80", name: "answeredInRound", type: "uint80" },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-];
-
-const feeds = {
-  ethereum: {
-    rpc: `https://rpc.ankr.com/eth/${ANKR_API}`,
-    tokens: {
-      ETH: "0x5f4ec3df9cbd43714fe2740f5e3616155c5b8419",
-    },
-  },
-  bsc: {
-    rpc: `https://rpc.ankr.com/bsc/${ANKR_API}`,
-    tokens: {
-      BNB: "0x0567f2323251f0aab15c8dfb1967e4e8a7d42aee",
-    },
-  },
-  polygon: {
-    rpc: `https://rpc.ankr.com/polygon/${ANKR_API}`,
-    tokens: {
-      MATIC: "0xab594600376ec9fd91f8e885dadf0ce036862de0",
-    },
-  },
+module.exports = {
+  PRESALE_ABI,
 };
-
-module.exports = { NETWORKS, PRESALE_ABI, feeds, aggregatorV3ABI };
